@@ -1,0 +1,78 @@
+---
+title: "read_data_from_web"
+output: html_document
+date: "2024-10-10"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(rvest)
+library(httr)
+```
+
+```{r}
+url = "http://samhda.s3-us-gov-west-1.amazonaws.com/s3fs-public/field-uploads/2k15StateFiles/NSDUHsaeShortTermCHG2015.htm"
+drug_use_html = read_html(url)
+
+drug_use_html
+```
+Get the pieces I actually need.
+```{r}
+marj_use_df = 
+drug_use_html |>
+  html_table() |>
+  first() |>
+  slice(-1)
+```
+Read in cost of living data
+```{r}
+url = "https://www.bestplaces.net/cost_of_living/city/new_york/new_york"
+nyc_cost_df = read_html(url) |>
+  html_table(header = TRUE)|>
+  first()
+```
+
+
+```{r}
+web |>
+  html_table() |>
+  first()
+```
+## CSS selectors!!
+```{r}
+swm_url = read_html("https://www.imdb.com/list/ls070150896/")
+swm_html = html_table(swm_url)
+```
+
+search for book
+```{r}
+url = "http://books.toscrape.com"
+
+books_html = read_html(url)
+
+books_titles = 
+  books_html |>
+  html_elements("h3") |>
+  html_text2()
+```
+```{r}
+# .price_color
+
+books_price = 
+  books_html |>
+  html_elements(".price_color") |>
+  html_text2()
+```
+## USE API
+Get water data
+
+```{r}
+nyc_water = 
+  GET("https://data.cityofnewyork.us/resource/ia2d-e54m.csv") |> 
+  content("parsed")
+```
+
